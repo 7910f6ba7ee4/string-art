@@ -16,6 +16,8 @@ if __name__ == '__main__':
                         help='Resolution of radon transform. Defaults to 180.')
     parser.add_argument('-l', '--lines', type=int, required=False, default=400,
                         help='Amount of lines to draw. Defaults to 400.')
+    parser.add_argument("-v", "--verbose", help="increase output verbosity",
+                        action="store_true")
 
     args = parser.parse_args()
     now = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -29,6 +31,6 @@ if __name__ == '__main__':
         n_spokes=args.spokes,
         radon_res=args.res,
         repetitions=args.lines)
-    string_art.render()
+    string_art.render(args.verbose)
     string_art.display_art(args.output)
     string_art.display_summary(args.output_summary)

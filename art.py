@@ -99,7 +99,7 @@ class ComputeStringArt:
             # new_spokes = self._find_first_spokes()
             self.spoke_order.append((working_spoke, new_spoke))
             working_spoke = new_spoke
-            print(f"spoke states: {self.spoke_order}")
+            # print(f"spoke states: {self.spoke_order}")
 
     def _find_project_pos(self, point_rad, proj_rad):
         return self.radius * math.cos(proj_rad - point_rad)
@@ -130,7 +130,7 @@ class ComputeStringArt:
                 if consider_spoke in self.spoke_map[spoke].unvisited:
                     best_spoke = consider_spoke
                     best_spoke_val = val
-                    print(f"VAAAALLL: {val}")
+                    # print(f"VAAAALLL: {val}")
 
         assert best_spoke_val is not None, "all spokes full"
         self.spoke_map[spoke].unvisited.remove(best_spoke)
@@ -140,7 +140,7 @@ class ComputeStringArt:
     def _coords_to_spokes(self, proj_pos, proj_rad):
         spoke1 = self.spokes_per_rad * (math.pi / 2 - math.asin(proj_pos / self.radius) + proj_rad)
         spoke2 = self.spokes_per_rad * (-math.pi / 2 + math.asin(proj_pos / self.radius) + proj_rad)
-        print(spoke1, spoke2)
+        # print(spoke1, spoke2)
         spoke1 = round((spoke1 + self.n_spokes) % self.n_spokes)
         spoke2 = round((spoke2 + self.n_spokes) % self.n_spokes)
         return spoke1, spoke2
@@ -149,13 +149,13 @@ class ComputeStringArt:
         proj_pos, proj_deg = np.unravel_index(np.argmin(self.working_radon[2:, 1:], axis=None),
                                               self.working_radon[2:, 1:].shape)
         # print(proj_pos, self.radius)
-        print(self.working_radon[proj_pos, proj_deg])
-        print(self.working_radon[proj_pos, proj_deg])
+        # print(self.working_radon[proj_pos, proj_deg])
+        # print(self.working_radon[proj_pos, proj_deg])
         spoke1, spoke2 = self._coords_to_spokes(proj_pos - self.radius, math.radians(self.theta[proj_deg]))
         self.working_radon[proj_pos + 2, proj_deg + 1] = 1000000000
-        print("spok", spoke1, spoke2)
-        print(proj_pos, proj_deg, self.working_radon[proj_pos][proj_deg], self.working_radon.shape)
-        print(self.working_radon[65:75, 91])
+        # print("spok", spoke1, spoke2)
+        # print(proj_pos, proj_deg, self.working_radon[proj_pos][proj_deg], self.working_radon.shape)
+        # print(self.working_radon[65:75, 91])
         # print(self.radon_transform[65:75, 85:95])
         spoke1 = self.n_spokes if spoke1 == 0 else spoke1
         spoke2 = self.n_spokes if spoke2 == 0 else spoke2
@@ -231,14 +231,15 @@ class ComputeStringArt:
                 self._plot(x, math.floor(intery) + 1, self._fpart(intery))
                 intery = intery + gradient
 
-    def render(self):
+    def render(self, verbose):
         self.string_image = np.zeros([self.radius * 2 + 2, self.radius * 2 + 2], dtype=np.float64)
         for start, end in self.spoke_order:
-            print(f"Drawing line from ("
-                  f"{self.spoke_map[start].x}, "
-                  f"{self.spoke_map[start].y}) to "
-                  f"({self.spoke_map[end].x},"
-                  f"{self.spoke_map[end].y})")
+            if verbose:
+                print(f"Drawing line from ("
+                      f"{self.spoke_map[start].x}, "
+                      f"{self.spoke_map[start].y}) to "
+                      f"({self.spoke_map[end].x},"
+                      f"{self.spoke_map[end].y})")
             self._draw_line(
                 self.spoke_map[start].x,
                 self.spoke_map[start].y,
@@ -249,9 +250,16 @@ class ComputeStringArt:
         fig, ax = plt.subplots(2, 2)
         ax = ax.flatten()
         ax[0].imshow(1 - self.string_image, cmap='grey')
+        ax[0].set_title("String Art")
         ax[1].imshow(self.image, cmap='grey')
+        ax[1].set_title("Original Image")
         ax[2].imshow(self.radon_transform, cmap='grey')
+        ax[2].set_title("Radon Transform")
+        ax[2].set_xlabel("Projection Degree")
+        ax[2].set_ylabel("Projection Position")
         ax[3].imshow(iradon(self.radon_transform), cmap='grey')
+        ax[3].set_title("Inverse Radon Recreation")
+        fig.tight_layout()
         fig.savefig(file)
 
     def display_art(self, file):
