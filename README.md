@@ -3,6 +3,15 @@ An attempt at creating computationally efficient string art using fourier transf
 Does not work well currently, struggles with complex images, although can create a rough shape of a simple image
 such as a rectangle.
 
+Examples of simple shapes:
+
+![Image of string art rectangle](media/rectangle_string_art_summary.png)
+![Image of string art triangle](media/triangle_string_art_summary.png)
+
+And complex shapes:
+
+![Image of string art man](media/man_string_art_summary.png)
+
 ### Installation
 First clone and enter the repository.
 
