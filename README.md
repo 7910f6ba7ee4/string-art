@@ -19,6 +19,9 @@ First clone and enter the repository.
 git clone https://github.com/7910f6ba7ee4/string-art.git
 cd string-art
 ```
+
+Then install dependencies with `conda env create --name envname --file=environments.yml`.
+
 It is recommended to put input images in the `input/` folder, but the script does not automatically
 pull from there.
 
